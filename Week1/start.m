@@ -107,6 +107,7 @@ I_ch2 = I(:,:,2);
 I_ch3 = I(:,:,3);
 
 %TO COMPLETE 1
+%The mask just look for the strong red values in the first channel of the immage
 mask = I_ch1 > 0.8 ; %mask_img(i,j) == 1 means we have lost information in that pixel
                                       %mask(i,j) == 0 means we have information in that pixel
 

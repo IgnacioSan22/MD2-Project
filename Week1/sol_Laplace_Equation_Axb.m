@@ -20,6 +20,7 @@ nonZeroPos = nPixels + 4*nnz(dom2Inp) + 2*(ni+2) + 2*(nj+2);
 %idx_Ai: Vector for the nonZero i index of matrix A
 %idx_Aj: Vector for the nonZero j index of matrix A
 %a_ij: Vector for the value at position ij of matrix A
+%Initialize vectors to fill later in the loops
 idx_Ai = zeros(nonZeroPos,1);
 idx_Aj = zeros(nonZeroPos,1);
 a_ij = zeros(nonZeroPos,1);
@@ -89,6 +90,7 @@ for i=1:ni+2
     idx=idx+1;
     
     idx_Ai(idx) = p;
+    %Move the vertical size of the image to change column since the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p + (ni+2);
     a_ij(idx) = -1;   
     idx=idx+1;
@@ -113,6 +115,7 @@ for i=1:ni+2
     idx=idx+1;
     
     idx_Ai(idx) = p;
+    %Move the vertical size of the image to change column since the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p - (ni+2);
     a_ij(idx) = -1;   
     idx=idx+1;
@@ -161,7 +164,7 @@ for j=2:nj+1
             b(p) = 0;
     
         else %we do not have to inpaint this pixel 
-            
+        % Just set the original value 𝑉(x,y)=𝑈(x,y) at each (x,y) in A
             %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
             %vector b
              %TO COMPLETE 6
@@ -169,7 +172,7 @@ for j=2:nj+1
             idx_Aj(idx) = p; 
             a_ij(idx) = 1;
             idx = idx + 1;
-            b(p) = f_ext(i, j);
+            b(p) = f_ext(i, j); 
             
         end       
     end
