@@ -14,7 +14,7 @@ nPixels = (ni+2) * (nj+2); %Number of pixels
 
 %We will create A sparse, this is the number of nonzero positions
 % 4 for each pixel in the mask
-% 2 times row and column size for the ghost boundaries
+% 2 times row and column size, beacuse ghost boundaries only use one neighbour
 nonZeroPos = nPixels + 4*nnz(dom2Inp) + 2*(ni+2) + 2*(nj+2);
 
 %idx_Ai: Vector for the nonZero i index of matrix A
@@ -90,7 +90,8 @@ for i=1:ni+2
     idx=idx+1;
     
     idx_Ai(idx) = p;
-    %Move the vertical size of the image to change column since the image displayed as vector is natural rowwise ordered
+    %Move the vertical size of the image to change to the next column,
+    % the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p + (ni+2);
     a_ij(idx) = -1;   
     idx=idx+1;
@@ -115,7 +116,8 @@ for i=1:ni+2
     idx=idx+1;
     
     idx_Ai(idx) = p;
-    %Move the vertical size of the image to change column since the image displayed as vector is natural rowwise ordered
+    %Move the vertical size of the image to change to the previous column,
+    % the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p - (ni+2);
     a_ij(idx) = -1;   
     idx=idx+1;
@@ -132,7 +134,7 @@ for j=2:nj+1
         p = (j-1)*(ni+2)+i;
                                             
         if (dom2Inp_ext(i,j)==1) %If we have to inpaint this pixel
-            
+            % 4V(x,y) - V(x+1,y) - V(x-1,y) - V(x,y+1) - V(x,y-1) = 0
             %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
             %vector b
             %TO COMPLETE 5
