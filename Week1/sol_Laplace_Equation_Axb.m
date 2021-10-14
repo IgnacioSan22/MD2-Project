@@ -1,7 +1,7 @@
 function [u] = sol_Laplace_Equation_Axb(f, dom2Inp, param)
 %this code is not intended to be efficient. 
 
-[ni, nj]=size(f);
+[ni, nj] = size(f);
 
 %We add the ghost boundaries (for the boundary conditions)
 f_ext = zeros(ni+2, nj+2);
@@ -28,10 +28,10 @@ a_ij = zeros(nonZeroPos,1);
 b = zeros(nPixels,1);
 
 %Vector counter
-idx=1;
+idx = 1;
 
 %North side boundary conditions
-i=1;
+i = 1;
 for j=1:nj+2
     %from image matrix (i,j) coordinates to vectorial (p) coordinate
     p = (j-1)*(ni+2)+i;
@@ -42,18 +42,18 @@ for j=1:nj+2
     idx_Ai(idx)=p; 
     idx_Aj(idx) = p; 
     a_ij(idx) = 1;
-    idx=idx+1;
+    idx = idx+1;
     
     idx_Ai(idx) = p;
     idx_Aj(idx) = p+1;
     a_ij(idx) = -1;   
-    idx=idx+1;
+    idx = idx+1;
             
     b(p) = 0;
 end
 
 %South side boundary conditions
-i=ni+2;
+i = ni+2;
 for j=1:nj+2
     %from image matrix (i,j) coordinates to vectorial (p) coordinate
     p = (j-1)*(ni+2)+i;
@@ -61,22 +61,22 @@ for j=1:nj+2
     %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
     %vector b
     %TO COMPLETE 2
-    idx_Ai(idx)=p; 
+    idx_Ai(idx) = p; 
     idx_Aj(idx) = p; 
     a_ij(idx) = 1;
-    idx=idx+1;
+    idx = idx+1;
     
     idx_Ai(idx) = p;
     idx_Aj(idx) = p-1;
     a_ij(idx) = -1;   
-    idx=idx+1;
+    idx = idx+1;
             
     b(p) = 0;
     
 end
 
 %West side boundary conditions
-j=1;
+j = 1;
 for i=1:ni+2
     %from image matrix (i,j) coordinates to vectorial (p) coordinate
     p = (j-1)*(ni+2)+i;
@@ -84,25 +84,23 @@ for i=1:ni+2
     %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
     %vector b
     %TO COMPLETE 3
-    idx_Ai(idx)=p; 
+    idx_Ai(idx) = p; 
     idx_Aj(idx) = p; 
     a_ij(idx) = 1;
-    idx=idx+1;
+    idx = idx+1;
     
     idx_Ai(idx) = p;
     %Move the vertical size of the image to change to the next column,
     % the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p + (ni+2);
     a_ij(idx) = -1;   
-    idx=idx+1;
+    idx = idx+1;
             
     b(p) = 0;
-    
-    
 end
 
 %East side boundary conditions
-j=nj+2;
+j = nj+2;
 for i=1:ni+2
     %from image matrix (i,j) coordinates to vectorial (p) coordinate
     p = (j-1)*(ni+2)+i;
@@ -110,17 +108,17 @@ for i=1:ni+2
     %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
     %vector b
     %TO COMPLETE 4
-    idx_Ai(idx)=p; 
+    idx_Ai(idx) = p; 
     idx_Aj(idx) = p; 
     a_ij(idx) = 1;
-    idx=idx+1;
+    idx = idx+1;
     
     idx_Ai(idx) = p;
     %Move the vertical size of the image to change to the previous column,
     % the image displayed as vector is natural rowwise ordered
     idx_Aj(idx) = p - (ni+2);
     a_ij(idx) = -1;   
-    idx=idx+1;
+    idx = idx+1;
             
     b(p) = 0;
     
@@ -133,7 +131,7 @@ for j=2:nj+1
         %from image matrix (i,j) coordinates to vectorial (p) coordinate
         p = (j-1)*(ni+2)+i;
                                             
-        if (dom2Inp_ext(i,j)==1) %If we have to inpaint this pixel
+        if (dom2Inp_ext(i,j) == 1) %If we have to inpaint this pixel
             % 4V(x,y) - V(x+1,y) - V(x-1,y) - V(x,y+1) - V(x,y-1) = 0
             %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
             %vector b
@@ -141,24 +139,24 @@ for j=2:nj+1
             idx_Ai(idx) = p; 
             idx_Aj(idx) = p; 
             a_ij(idx) = -4;
-            idx=idx+1;
+            idx = idx+1;
 
-            idx_Ai(idx)= p;
+            idx_Ai(idx) = p;
             idx_Aj(idx) = p+1;
             a_ij(idx) = 1;
             idx = idx+1;
 
-            idx_Ai(idx)= p;
+            idx_Ai(idx) = p;
             idx_Aj(idx) = p-1;
             a_ij(idx) = 1;
-            idx=idx+1;
+            idx = idx+1;
 
-            idx_Ai(idx)= p;
+            idx_Ai(idx) = p;
             idx_Aj(idx) = p+(ni+2);
             a_ij(idx) = 1;
             idx = idx+1;
 
-            idx_Ai(idx)= p;
+            idx_Ai(idx) = p;
             idx_Aj(idx) = p-(ni+2);
             a_ij(idx) = 1;
             idx = idx+1;
@@ -182,14 +180,14 @@ end
     %A is a sparse matrix, so for memory requirements we create a sparse
     %matrix
     %TO COMPLETE 7
-    A=sparse(idx_Ai, idx_Aj, a_ij, nPixels, nPixels); %??? and ???? is the size of matrix A
+    A = sparse(idx_Ai, idx_Aj, a_ij, nPixels, nPixels); %??? and ???? is the size of matrix A
     
     %Solve the sistem of equations
-    x=mldivide(A,b);
+    x = mldivide(A,b);
     
     %From vector to matrix
-    u_ext= reshape(x, ni+2, nj+2);
+    u_ext = reshape(x, ni+2, nj+2);
     
     %Eliminate the ghost boundaries
-    u=full(u_ext(2:end-1, 2:end-1));
+    u = full(u_ext(2:end-1, 2:end-1));
     

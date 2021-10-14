@@ -12,7 +12,7 @@ clearvars;
 %  image5_toRestore.jpg
 
 %name= 'image5';
-name= 'image1';
+name = 'image1';
 
 I = double(imread([ name '_toRestore.jpg']));
 %I=I(1:10,1:10);
@@ -20,23 +20,23 @@ I = double(imread([ name '_toRestore.jpg']));
 %Number of pixels for each dimension, and number of channles
 [ni, nj, nC] = size(I);
 
-if nC==3
+if nC == 3
     I = mean(I,3); %Convert to b/w. If you load a color image you should comment this line
 end
 
 %Normalize values into [0,1]
-I=I-min(I(:));
-I=I/max(I(:));
+I = I-min(I(:));
+I = I/max(I(:));
 
 %Load the mask
 mask_img = double(imread([name '_mask.jpg']));
 %mask_img =mask_img(1:10,1:10);
 [ni, nj, nC] = size(mask_img);
-if nC==3
+if nC == 3
     mask_img = mask_img(:,:,1); %Convert to b/w. If you load a color image you should comment this line
 end
 %We want to inpaint those areas in which mask == 1
-mask = mask_img >128; %mask(i,j) == 1 means we have lost information in that pixel
+mask = mask_img > 128; %mask(i,j) == 1 means we have lost information in that pixel
                       %mask(i,j) == 0 means we have information in that
                       %pixel
                                                                     
@@ -54,23 +54,23 @@ figure(1)
 imshow(I);
 title('Before')
 
-Iinp=sol_Laplace_Equation_Axb(I, mask, param);
+Iinp = sol_Laplace_Equation_Axb(I, mask, param);
 figure(2)
 imshow(Iinp)
 title('After');
 
 %% Challenge image. (We have lost 99% of information)
 clearvars
-I=double(imread('image6_toRestore.jpg'));
+I = double(imread('image6_toRestore.jpg'));
 %Normalize values into [0,1]
-I=I/256;
+I = I/256;
 
 
 %Number of pixels for each dimension, and number of channels
 [ni, nj, nC] = size(I);
 
-mask_img=double(imread('image6_mask.jpg'));
-mask = mask_img >128; %mask(i,j) == 1 means we have lost information in that pixel
+mask_img = double(imread('image6_mask.jpg'));
+mask = mask_img > 128; %mask(i,j) == 1 means we have lost information in that pixel
                       %mask(i,j) == 0 means we have information in that
                       %pixel
 
@@ -81,9 +81,9 @@ figure(1)
 imshow(I);
 title('Before')
 
-Iinp(:,:,1)=sol_Laplace_Equation_Axb(I(:,:,1), mask(:,:,1), param);
-Iinp(:,:,2)=sol_Laplace_Equation_Axb(I(:,:,2), mask(:,:,2), param);
-Iinp(:,:,3)=sol_Laplace_Equation_Axb(I(:,:,3), mask(:,:,3), param);
+Iinp(:,:,1) = sol_Laplace_Equation_Axb(I(:,:,1), mask(:,:,1), param);
+Iinp(:,:,2) = sol_Laplace_Equation_Axb(I(:,:,2), mask(:,:,2), param);
+Iinp(:,:,3) = sol_Laplace_Equation_Axb(I(:,:,3), mask(:,:,3), param);
 
 figure(2)
 imshow(Iinp)
@@ -108,7 +108,7 @@ I_ch3 = I(:,:,3);
 
 %TO COMPLETE 1
 %The mask just look for the strong red values in the first channel of the immage
-mask = I_ch1 > 0.8 ; %mask_img(i,j) == 1 means we have lost information in that pixel
+mask = I_ch1 > 0.9 ; %mask_img(i,j) == 1 means we have lost information in that pixel
                                       %mask(i,j) == 0 means we have information in that pixel
 
 %%%Parameters for gradient descent (you do not need for week1)
@@ -126,9 +126,9 @@ figure(1)
 imshow(I);
 title('Before')
 
-Iinp(:,:,1)=sol_Laplace_Equation_Axb(I_ch1, mask, param);
-Iinp(:,:,2)=sol_Laplace_Equation_Axb(I_ch2, mask, param);
-Iinp(:,:,3)=sol_Laplace_Equation_Axb(I_ch3, mask, param);
+Iinp(:,:,1) = sol_Laplace_Equation_Axb(I_ch1, mask, param);
+Iinp(:,:,2) = sol_Laplace_Equation_Axb(I_ch2, mask, param);
+Iinp(:,:,3) = sol_Laplace_Equation_Axb(I_ch3, mask, param);
     
 figure(2)
 imshow(Iinp)
