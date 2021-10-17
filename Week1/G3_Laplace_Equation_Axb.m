@@ -1,4 +1,4 @@
-function [u] = sol_Laplace_Equation_Axb(f, dom2Inp, param)
+function [u] = G3_Laplace_Equation_Axb(f, dom2Inp, param)
 %this code is not intended to be efficient. 
 
 [ni, nj] = size(f);
@@ -182,7 +182,7 @@ end
     %TO COMPLETE 7
     A = sparse(idx_Ai, idx_Aj, a_ij, nPixels, nPixels); %??? and ???? is the size of matrix A
     
-    %Solve the sistem of equations
+    %Solve the system of equations
     x = mldivide(A,b);
     
     %From vector to matrix
