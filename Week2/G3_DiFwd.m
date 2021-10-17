@@ -1,4 +1,4 @@
-function [ result ] = DiFwd( I, hi )    
+function [ result ] = G3_DiFwd( I, hi )    
 % Compute the Forward finite differences with respect to the
 % i coordinate only for the 1:end-1 rows. The last row is not replaced
     

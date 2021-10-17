@@ -1,5 +1,5 @@
 
-function [ result ] = DjFwd( I, hj )
+function [ result ] = G3_DjFwd( I, hj )
 % Compute the Forward finite differences with respect to the
 % j coordinate only for the 1:end-1 columns. The last column is not replaced
 

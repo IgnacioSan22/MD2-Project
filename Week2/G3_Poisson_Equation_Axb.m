@@ -125,62 +125,63 @@ for i=1:ni+2
 end
 
 %Inner points
-%If driving is true exists, do the Poisson editing
-if (isfield(param, 'driving'))
 
-else
-   for j=2:nj+1
-        for i=2:ni+1
-         
-            %from image matrix (i,j) coordinates to vectorial (p) coordinate
-            p = (j-1)*(ni+2)+i;
-                                                
-            if (dom2Inp_ext(i,j) == 1) %If we have to inpaint this pixel
-                % 4V(x,y) - V(x+1,y) - V(x-1,y) - V(x,y+1) - V(x,y-1) = 0
-                %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
-                %vector b
-                %TO COMPLETE 5
-                idx_Ai(idx) = p; 
-                idx_Aj(idx) = p; 
-                a_ij(idx) = -4;
-                idx = idx+1;
-    
-                idx_Ai(idx) = p;
-                idx_Aj(idx) = p+1;
-                a_ij(idx) = 1;
-                idx = idx+1;
-    
-                idx_Ai(idx) = p;
-                idx_Aj(idx) = p-1;
-                a_ij(idx) = 1;
-                idx = idx+1;
-    
-                idx_Ai(idx) = p;
-                idx_Aj(idx) = p+(ni+2);
-                a_ij(idx) = 1;
-                idx = idx+1;
-    
-                idx_Ai(idx) = p;
-                idx_Aj(idx) = p-(ni+2);
-                a_ij(idx) = 1;
-                idx = idx+1;
-    
-                b(p) = 0;
-        
-            else %we do not have to inpaint this pixel 
-            % Just set the original value 𝑉(x,y)=𝑈(x,y) at each (x,y) in A
-                %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
-                %vector b
-                 %TO COMPLETE 6
-                idx_Ai(idx) = p; 
-                idx_Aj(idx) = p; 
-                a_ij(idx) = 1;
-                idx = idx + 1;
-                b(p) = f_ext(i, j); 
+for j=2:nj+1
+    for i=2:ni+1
+     
+        %from image matrix (i,j) coordinates to vectorial (p) coordinate
+        p = (j-1)*(ni+2)+i;
+                                            
+        if (dom2Inp_ext(i,j) == 1) %If we have to inpaint this pixel
+            % 4V(x,y) - V(x+1,y) - V(x-1,y) - V(x,y+1) - V(x,y-1) = 0
+            %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
+            %vector b
+            %TO COMPLETE 5
+            idx_Ai(idx) = p; 
+            idx_Aj(idx) = p; 
+            a_ij(idx) = -4;
+            idx = idx+1;
+
+            idx_Ai(idx) = p;
+            idx_Aj(idx) = p+1;
+            a_ij(idx) = 1;
+            idx = idx+1;
+
+            idx_Ai(idx) = p;
+            idx_Aj(idx) = p-1;
+            a_ij(idx) = 1;
+            idx = idx+1;
+
+            idx_Ai(idx) = p;
+            idx_Aj(idx) = p+(ni+2);
+            a_ij(idx) = 1;
+            idx = idx+1;
+
+            idx_Ai(idx) = p;
+            idx_Aj(idx) = p-(ni+2);
+            a_ij(idx) = 1;
+            idx = idx+1;
                 
-            end       
-        end
-    end 
+            %If driving exists, do Poisson editting
+            if (isfield(param, 'driving'))
+                b(p) = 
+            else
+                b(p) = 0;
+            end
+    
+        else %we do not have to inpaint this pixel 
+        % Just set the original value 𝑉(x,y)=𝑈(x,y) at each (x,y) in A
+            %Fill Idx_Ai, idx_Aj and a_ij with the corresponding values and
+            %vector b
+             %TO COMPLETE 6
+            idx_Ai(idx) = p; 
+            idx_Aj(idx) = p; 
+            a_ij(idx) = 1;
+            idx = idx + 1;
+            b(p) = f_ext(i, j); 
+            
+        end       
+    end
 end
 
 %A is a sparse matrix, so for memory requirements we create a sparse

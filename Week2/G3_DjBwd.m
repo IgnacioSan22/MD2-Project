@@ -1,4 +1,4 @@
-function [ result ] = DjBwd( I, hj )
+function [ result ] = G3_DjBwd( I, hj )
 % Compute the backward finite differences with respect to the
 % j coordinate only for the 2:end columns. The first column is not replaced
 
