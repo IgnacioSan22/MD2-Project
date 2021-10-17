@@ -139,32 +139,32 @@ for j=2:nj+1
             %TO COMPLETE 5
             idx_Ai(idx) = p; 
             idx_Aj(idx) = p; 
-            a_ij(idx) = -4;
+            a_ij(idx) = 4;
             idx = idx+1;
 
             idx_Ai(idx) = p;
             idx_Aj(idx) = p+1;
-            a_ij(idx) = 1;
+            a_ij(idx) = -1;
             idx = idx+1;
 
             idx_Ai(idx) = p;
             idx_Aj(idx) = p-1;
-            a_ij(idx) = 1;
+            a_ij(idx) = -1;
             idx = idx+1;
 
             idx_Ai(idx) = p;
             idx_Aj(idx) = p+(ni+2);
-            a_ij(idx) = 1;
+            a_ij(idx) = -1;
             idx = idx+1;
 
             idx_Ai(idx) = p;
             idx_Aj(idx) = p-(ni+2);
-            a_ij(idx) = 1;
+            a_ij(idx) = -1;
             idx = idx+1;
                 
             %If driving exists, do Poisson editting
             if (isfield(param, 'driving'))
-                b(p) = param.driving(i+1,j+1);
+                b(p) = param.driving(i-1,j-1);
             else
                 b(p) = 0;
             end

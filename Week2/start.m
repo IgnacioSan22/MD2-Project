@@ -14,10 +14,10 @@ mask_dst=logical(imread('mask_dst_eyes.png'));
 for nC = 1: nChannels
     
     %TO DO: COMPLETE the ??
-    drivingGrad_i = G3_DiBwd(src(:,:,nC));
-    drivingGrad_j = G3_DjBwd(src(:,:,nC));
+    drivingGrad_i = G3_DiBwd(src(:,:,nC), param.hi) - G3_DiFwd(src(:,:,nC), param.hi);
+    drivingGrad_j = G3_DjBwd(src(:,:,nC), param.hj) - G3_DjFwd(src(:,:,nC), param.hj);
 
-    driving_on_src = G3_DiFwd(drivingGrad_i) + G3_DjFwd(drivingGrad_j);
+    driving_on_src = drivingGrad_i + drivingGrad_j;
     
     driving_on_dst = zeros(size(src(:,:,1)));   
     driving_on_dst(mask_dst(:)) = driving_on_src(mask_src(:));
@@ -34,10 +34,10 @@ mask_dst=logical(imread('mask_dst_mouth.png'));
 for nC = 1: nChannels
     
     %TO DO: COMPLETE the ??
-    drivingGrad_i = G3_DiBwd(src(:,:,nC));
-    drivingGrad_j = G3_DjBwd(src(:,:,nC));
+    drivingGrad_i = G3_DiBwd(src(:,:,nC), param.hi) - G3_DiFwd(src(:,:,nC), param.hi);
+    drivingGrad_j = G3_DjBwd(src(:,:,nC), param.hj) - G3_DjFwd(src(:,:,nC), param.hj);
 
-    driving_on_src = G3_DiFwd(drivingGrad_i) + G3_DjFwd(drivingGrad_j);
+    driving_on_src = drivingGrad_i + drivingGrad_j;
     
     driving_on_dst = zeros(size(src(:,:,1)));
     driving_on_dst(mask_dst(:)) = driving_on_src(mask_src(:));
