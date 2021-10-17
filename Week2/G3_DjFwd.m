@@ -5,7 +5,7 @@ function [ result ] = G3_DjFwd( I, hj )
 
     if (~exist('hj', 'var'))
         hj=1;
-    end;
+    end
  
     result = I;
     %Begin To Complete 9

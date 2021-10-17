@@ -164,7 +164,7 @@ for j=2:nj+1
                 
             %If driving exists, do Poisson editting
             if (isfield(param, 'driving'))
-                b(p) = 
+                b(p) = param.driving(i+1,j+1);
             else
                 b(p) = 0;
             end

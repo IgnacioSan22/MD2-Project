@@ -4,7 +4,7 @@ function [ result ] = G3_DiFwd( I, hi )
     
     if (~exist('hi', 'var'))
         hi=1;
-    end;
+    end
 
     result = I;
     %Begin To Complete 8
