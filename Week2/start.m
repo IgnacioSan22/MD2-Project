@@ -1,6 +1,6 @@
 clearvars;
-dst = double(imread('lena.png'));
-src = double(imread('girl.png')); % flipped girl, because of the eyes
+dst = double(imread('Images/lena.png'));
+src = double(imread('Images/girl.png')); % flipped girl, because of the eyes
 [ni,nj, nChannels]=size(dst);
 
 param.hi=1;
@@ -8,8 +8,8 @@ param.hj=1;
 
 
 %masks to exchange: Eyes
-mask_src=logical(imread('mask_src_eyes.png'));
-mask_dst=logical(imread('mask_dst_eyes.png'));
+mask_src=logical(imread('Images/mask_src_eyes.png'));
+mask_dst=logical(imread('Images/mask_dst_eyes.png'));
 
 for nC = 1: nChannels
     
@@ -29,8 +29,8 @@ end
 
 %Mouth
 %masks to exchange: Mouth
-mask_src=logical(imread('mask_src_mouth.png'));
-mask_dst=logical(imread('mask_dst_mouth.png'));
+mask_src=logical(imread('Images/mask_src_mouth.png'));
+mask_dst=logical(imread('Images/mask_dst_mouth.png'));
 for nC = 1: nChannels
     
     %TO DO: COMPLETE the ??
