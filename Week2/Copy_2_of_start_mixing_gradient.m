@@ -12,8 +12,8 @@ param.hj=1;
 %masks to exchange: Eyes
 % mask_src=logical(imread('Images/rainbow_src_mask.png'));
 % mask_dst=logical(imread('Images/rainbow_dst_mask.png'));
-mask_src=logical(imread('Images/mask_src_mouth.png'));
-mask_dst=logical(imread('Images/mask_dst_mouth.png'));
+mask_src=logical(imread('Images/mask_src_eyes.png'));
+mask_dst=logical(imread('Images/mask_dst_eyes.png'));
 
 for nC = 1: nChannels
     

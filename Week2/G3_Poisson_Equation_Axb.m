@@ -190,7 +190,8 @@ end
 A = sparse(idx_Ai, idx_Aj, a_ij, nPixels, nPixels); %??? and ???? is the size of matrix A
 
 %Solve the system of equations
-x = mldivide(A,b);
+% x = mldivide(A,b);
+x = G3_gradient_descent(A, f_ext(:), b, 0.001);
 
 %From vector to matrix
 u_ext = reshape(x, ni+2, nj+2);
