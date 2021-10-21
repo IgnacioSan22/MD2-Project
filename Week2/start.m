@@ -24,7 +24,7 @@ for nC = 1: nChannels
     
     param.driving = driving_on_dst;
 
-    dst1(:,:,nC) = G3_Poisson_Equation_Axb(dst(:,:,nC), mask_dst,  param);
+    dst1(:,:,nC) = G3_Poisson_Equation_Axb(dst(:,:,nC), mask_dst,  param, false);
 end
 
 %Mouth
@@ -44,7 +44,7 @@ for nC = 1: nChannels
     
     param.driving = driving_on_dst;
 
-    dst1(:,:,nC) = G3_Poisson_Equation_Axb(dst1(:,:,nC), mask_dst,  param);
+    dst1(:,:,nC) = G3_Poisson_Equation_Axb(dst1(:,:,nC), mask_dst,  param, false);
 end
 
 imshow(dst1/256)

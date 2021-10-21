@@ -1,4 +1,4 @@
-function [u] = G3_Poisson_Equation_Axb(f, dom2Inp, param)
+function [u] = G3_Poisson_Equation_Axb(f, dom2Inp, param, b_gradientDescent)
 %this code is not intended to be efficient. 
 
 [ni, nj] = size(f);
@@ -190,8 +190,11 @@ end
 A = sparse(idx_Ai, idx_Aj, a_ij, nPixels, nPixels); %??? and ???? is the size of matrix A
 
 %Solve the system of equations
-% x = mldivide(A,b);
-x = G3_gradient_descent(A, f_ext(:), b, 0.001);
+if (b_gradientDescent==true)
+    x = G3_gradient_descent(A, f_ext(:), b, 0.001);
+else
+    x = mldivide(A,b);
+end
 
 %From vector to matrix
 u_ext = reshape(x, ni+2, nj+2);
