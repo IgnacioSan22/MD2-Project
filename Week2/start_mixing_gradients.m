@@ -18,6 +18,7 @@ mask_dst=logical(imread('Images/mask_dst_eyes.png'));
 for nC = 1: nChannels
     
     %TO DO: COMPLETE the ??
+    %Compute the gradient for Src
     Src_Grad_i = G3_DiFwd(src(:,:,nC), param.hi);
     Src_Grad_j = G3_DjFwd(src(:,:,nC), param.hj);
 
@@ -25,8 +26,11 @@ for nC = 1: nChannels
     driving_Src_Grad_i(mask_dst(:)) = Src_Grad_i(mask_src(:));
     driving_Src_Grad_j = zeros(size(src(:,:,1)));
     driving_Src_Grad_j(mask_dst(:)) = Src_Grad_j(mask_src(:));
+
+    %Compute the magitude of the gradient for Src
     magnitudeSrc = sqrt(driving_Src_Grad_i.^2 + driving_Src_Grad_j.^2);
 
+    %Compute the gradient for Dst
     Dst_Grad_i = G3_DiFwd(dst(:,:,nC), param.hi);
     Dst_Grad_j = G3_DjFwd(dst(:,:,nC), param.hj);
 
@@ -34,8 +38,11 @@ for nC = 1: nChannels
     driving_Dst_Grad_i(mask_dst(:)) = Dst_Grad_i(mask_dst(:));
     driving_Dst_Grad_j = zeros(size(src(:,:,1)));
     driving_Dst_Grad_j(mask_dst(:)) = Dst_Grad_j(mask_dst(:));
+
+    % Compute the magitude of the gradient for Dst
     magnitudeDst = sqrt(driving_Dst_Grad_i.^2 + driving_Dst_Grad_j.^2);
     
+    % Select the stronger gradient based on their Magnitude
     driving_Src_Grad_i(magnitudeDst > magnitudeSrc) = driving_Dst_Grad_i(magnitudeDst > magnitudeSrc);
     driving_Src_Grad_j(magnitudeDst > magnitudeSrc) = driving_Dst_Grad_j(magnitudeDst > magnitudeSrc);    
     
