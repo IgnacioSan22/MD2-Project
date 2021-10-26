@@ -4,10 +4,10 @@ clc
 
 %I=double(imread('zigzag_mask.png'));
 %I=mean(I,3); %To 2D matrix
-% I=double(imread('circles.png'));
-% I=double(imread('noisedCircles.tif'));
+% I=double(imread('Image_to_Restore.png'));
+I=double(imread('noisedCircles.tif'));
 % I=double(imread('phantom17.bmp'));
-I=double(imread('phantom18.bmp'));
+% I=double(imread('phantom18.bmp'));
 I=mean(I,3);
 I=I-min(I(:));
 I=I/max(I(:));
@@ -29,20 +29,20 @@ nu=0;
 %%Parameters
 lambda1=1;
 lambda2=1;
-%lambda1=10^-3; %Hola carola problem
-%lambda2=10^-3; %Hola carola problem
+% lambda1=10^-3; %Hola carola problem
+% lambda2=10^-3; %Hola carola problem
 
 epHeaviside=1;
-%eta=0.01;
-eta=1;
-tol=0.001;
-%dt=(10^-2)/mu; 
-dt=(10^-1)/mu;
-% dt = 0.5;
+eta=0.1;
+% eta=1;
+tol=0.0000001;
+% dt=(10^-2)/mu; 
+% dt=(10^-1)/mu;
+dt = 0.5;
 iterMax=100000;
-%reIni=0; %Try both of them
-%reIni=500;
-reIni=100;
+reIni=0; %Try both of them
+% reIni=500;
+% reIni=100;
 [X, Y]=meshgrid(1:nj, 1:ni);
 
 %%Initial phi
@@ -56,7 +56,7 @@ phi_0 = sin((pi/5)*X).*sin((pi/5)*Y);
 %phi_0=2*phi_0/max(phi_0(:));
 %phi_0=phi_0-1;
 
-%phi_0=I; %For the Hola carola problem
+% phi_0=I; %For the Hola carola problem
 
 phi_0=phi_0-min(phi_0(:));
 phi_0=2*phi_0/max(phi_0(:));

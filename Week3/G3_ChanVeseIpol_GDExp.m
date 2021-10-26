@@ -41,16 +41,16 @@ while dif>tol && nIter<iterMax
 %     c2 = sum(I .* Hout,"all") ./ sum(Hout,"all"); %TODO 2: Line to complete
 
     %Boundary conditions
-    phi(:,1) = phi(:,2);
-    phi(:,end) = phi(:,end-1);
-    phi(1,:) = phi(2,:);
-    phi(end,:) = phi(end-1,:);
-%     phi_extend(2:end-1,2:end-1) = phi;
-%     phi_extend(1,:)   = phi_extend(2,:); %TODO 3: Line to complete
-%     phi_extend(end,:) = phi_extend(end-1,:); %TODO 4: Line to complete
-% 
-%     phi_extend(:,1)   = phi_extend(:,2); %TODO 5: Line to complete
-%     phi_extend(:,end) = phi_extend(:,end-1); %TODO 6: Line to complete
+%     phi(:,1) = phi(:,2);
+%     phi(:,end) = phi(:,end-1);
+%     phi(1,:) = phi(2,:);
+%     phi(end,:) = phi(end-1,:);
+    phi_extend(2:end-1,2:end-1) = phi;
+    phi_extend(1,:)   = phi_extend(end-1,:); %TODO 3: Line to complete
+    phi_extend(end,:) = phi_extend(2,:); %TODO 4: Line to complete
+
+    phi_extend(:,1)   = phi_extend(:,end-1); %TODO 5: Line to complete
+    phi_extend(:,end) = phi_extend(:,2); %TODO 6: Line to complete
 
     
     %Regularized Dirac's Delta computation
@@ -58,12 +58,12 @@ while dif>tol && nIter<iterMax
     
     %derivatives estimation
     %i direction, forward finite differences
-    phi_iFwd  = DiFwd(phi(:,:), hi); %TODO 7: Line to complete
-    phi_iBwd  = DiBwd(phi(:,:), hi); %TODO 8: Line to complete
+    phi_iFwd  = DiFwd(phi_extend(:,:), hi); %TODO 7: Line to complete
+    phi_iBwd  = DiBwd(phi_extend(:,:), hi); %TODO 8: Line to complete
     
     %j direction, forward finitie differences
-    phi_jFwd  = DjFwd(phi(:,:), hj); %TODO 9: Line to complete
-    phi_jBwd  = DjBwd(phi(:,:), hj); %TODO 10: Line to complete
+    phi_jFwd  = DjFwd(phi_extend(:,:), hj); %TODO 9: Line to complete
+    phi_jBwd  = DjBwd(phi_extend(:,:), hj); %TODO 10: Line to complete
     
     %centered finite diferences
     phi_icent   = (phi_iFwd + phi_iBwd) / 2; %TODO 11: Line to complete
@@ -71,27 +71,29 @@ while dif>tol && nIter<iterMax
     
     %A and B estimation (A y B from the Pascal Getreuer's IPOL paper "Chan
     %Vese segmentation
-    A = mu ./ sqrt(eta^2 + (phi_iFwd .* phi).^2 + (phi_jcent .* phi).^2); %TODO 13: Line to complete
-    Aback = mu ./ sqrt(eta^2 + (phi_iBwd .* phi).^2 + (phi_jcent .* phi).^2);
-    B = mu ./ sqrt(eta^2 + (phi_icent .* phi).^2 + (phi_jFwd .* phi).^2); %TODO 14: Line to complete
-    Bback = mu ./ sqrt(eta^2 + (phi_icent .* phi).^2 + (phi_jBwd .* phi).^2);
-    
-    %%Equation 22, for inner points
-%     A1 = A(2:end-1,2:end-1) .* phi_extend(3:end,2:end-1);
-%     A2 = A(1:end-2,2:end-1) .* phi_extend(1:end-2,2:end-1);
-%     B1 = B(2:end-1,2:end-1) .* phi_extend(2:end-1,3:end);
-%     B2 = B(2:end-1,1:end-2) .* phi_extend(2:end-1,1:end-2);
-    A1 = A(2:end-1,2:end-1) .* phi(3:end,2:end-1);
-    A2 = A(1:end-2,2:end-1) .* phi(1:end-2,2:end-1);
-    B1 = B(2:end-1,2:end-1) .* phi(2:end-1,3:end);
-    B2 = B(2:end-1,1:end-2) .* phi(2:end-1,1:end-2);
+    A = mu ./ sqrt(eta^2 + (phi_iFwd .* phi_extend).^2 + (phi_jcent .* phi_extend).^2); %TODO 13: Line to complete
+    Aback = mu ./ sqrt(eta^2 + (phi_iBwd .* phi_extend).^2 + (phi_jcent .* phi_extend).^2);
+    B = mu ./ sqrt(eta^2 + (phi_icent .* phi_extend).^2 + (phi_jFwd .* phi_extend).^2); %TODO 14: Line to complete
+    Bback = mu ./ sqrt(eta^2 + (phi_icent .* phi_extend).^2 + (phi_jBwd .* phi_extend).^2);
 
-    c1Factor = lambda1 * (I(2:end-1,2:end-1) - c1).^2;
-    c2Factor = lambda2 * (I(2:end-1,2:end-1) - c2).^2;
-    divisionFactor = A(2:end-1,2:end-1) + A(1:end-2,2:end-1) + B(2:end-1,2:end-1) + B(2:end-1,1:end-2);
+    %%Equation 22, for inner points
+    A1 = A(2:end-1,2:end-1) .* phi_extend(3:end,2:end-1); 
+    A2 = Aback(1:end-2,2:end-1) .* phi_extend(1:end-2,2:end-1);
+    B1 = B(2:end-1,2:end-1) .* phi_extend(2:end-1,3:end);
+    B2 = Bback(2:end-1,1:end-2) .* phi_extend(2:end-1,1:end-2);
+%     A1 = A(2:end-1,2:end-1) .* phi(3:end,2:end-1);
+%     A2 = Aback(1:end-2,2:end-1) .* phi(1:end-2,2:end-1);
+%     B1 = B(2:end-1,2:end-1) .* phi(2:end-1,3:end);
+%     B2 = Bback(2:end-1,1:end-2) .* phi(2:end-1,1:end-2);
+
+%     c1Factor = lambda1 * (I(2:end-1,2:end-1) - c1).^2;
+%     c2Factor = lambda2 * (I(2:end-1,2:end-1) - c2).^2;
+    c1Factor = lambda1 * (I - c1).^2;
+    c2Factor = lambda2 * (I - c2).^2;
+    divisionFactor = A(2:end-1,2:end-1) + Aback(1:end-2,2:end-1) + B(2:end-1,2:end-1) + Bback(2:end-1,1:end-2);
     
-    phi(2:end-1,2:end-1) = (phi_old(2:end-1,2:end-1) + dt .* delta_phi(2:end-1,2:end-1) .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
-        ./ (1 + dt * delta_phi(2:end-1,2:end-1) .* divisionFactor); %TODO 15: Line to complete
+    phi = (phi_old+ dt .* delta_phi .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
+        ./ (1 + dt * delta_phi .* divisionFactor); %TODO 15: Line to complete
     
     %Reinitialization of phi
     if reIni>0 && mod(nIter, reIni)==0
@@ -136,3 +138,5 @@ while dif>tol && nIter<iterMax
         fprintf('iter %03d, error: %.6f\n', nIter, dif);
     end
 end
+
+phi = phi <= 0;
