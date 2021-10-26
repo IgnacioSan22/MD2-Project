@@ -1,10 +1,10 @@
 
-function [ result ] = DiBwd( I, hi )
+function [ result ] = G3_DiBwd( I, hi )
 % Compute the backward finite differences with respect to the
 % i coordinate only for the 2:end rows. The first row is not replaced
     if (~exist('hi', 'var'))
         hi=1;
-    end;
+    end
 
     result=I;
     %Begin To Complete 10
