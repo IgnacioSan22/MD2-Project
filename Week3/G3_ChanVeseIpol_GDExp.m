@@ -1,4 +1,4 @@
-function [ phi ] = sol_ChanVeseIpol_GDExp( I, phi_0, mu, nu, eta, lambda1, lambda2, tol, epHeaviside, dt, iterMax, reIni )
+function [ phi ] = G3_ChanVeseIpol_GDExp( I, phi_0, mu, nu, eta, lambda1, lambda2, tol, epHeaviside, dt, iterMax, reIni )
 %Implementation of the Chan-Vese segmentation following the explicit
 %gradient descent in the paper of Pascal Getreur "Chan-Vese Segmentation".
 %It is the equation 19 from that paper
@@ -33,9 +33,13 @@ while dif>tol && nIter<iterMax
     
     %Fixed phi, Minimization w.r.t c1 and c2 (constant estimation)
     H = 0.5 * (1 + (2/pi) .* atan(phi ./ epHeaviside));
+%     H = (phi > 0);
+%     Hout = phi <= 0;
     c1 = sum(I .* H,"all") ./ sum(H,"all"); %TODO 1: Line to complete
     c2 = sum(I .* (1-H),"all") ./ sum(1-H,"all"); %TODO 2: Line to complete
-    
+%     c1 = sum(I .* H,"all") ./ sum(H,"all"); %TODO 1: Line to complete
+%     c2 = sum(I .* Hout,"all") ./ sum(Hout,"all"); %TODO 2: Line to complete
+
     %Boundary conditions
     phi(:,1) = phi(:,2);
     phi(:,end) = phi(:,end-1);
@@ -67,10 +71,10 @@ while dif>tol && nIter<iterMax
     
     %A and B estimation (A y B from the Pascal Getreuer's IPOL paper "Chan
     %Vese segmentation
-    A = mu ./ sqrt(nu^2 + (phi_iFwd .* phi).^2 + (phi_jcent .* phi).^2); %TODO 13: Line to complete
-    Aback = mu ./ sqrt(nu^2 + (phi_iBwd .* phi).^2 + (phi_jcent .* phi).^2);
-    B = mu ./ sqrt(nu^2 + (phi_icent .* phi).^2 + (phi_jFwd .* phi).^2); %TODO 14: Line to complete
-    Bback = mu ./ sqrt(nu^2 + (phi_icent .* phi).^2 + (phi_jBwd .* phi).^2);
+    A = mu ./ sqrt(eta^2 + (phi_iFwd .* phi).^2 + (phi_jcent .* phi).^2); %TODO 13: Line to complete
+    Aback = mu ./ sqrt(eta^2 + (phi_iBwd .* phi).^2 + (phi_jcent .* phi).^2);
+    B = mu ./ sqrt(eta^2 + (phi_icent .* phi).^2 + (phi_jFwd .* phi).^2); %TODO 14: Line to complete
+    Bback = mu ./ sqrt(eta^2 + (phi_icent .* phi).^2 + (phi_jBwd .* phi).^2);
     
     %%Equation 22, for inner points
 %     A1 = A(2:end-1,2:end-1) .* phi_extend(3:end,2:end-1);
@@ -86,7 +90,7 @@ while dif>tol && nIter<iterMax
     c2Factor = lambda2 * (I(2:end-1,2:end-1) - c2).^2;
     divisionFactor = A(2:end-1,2:end-1) + A(1:end-2,2:end-1) + B(2:end-1,2:end-1) + B(2:end-1,1:end-2);
     
-    phi(2:end-1,2:end-1) = (phi(2:end-1,2:end-1) + dt .* delta_phi(2:end-1,2:end-1) .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
+    phi(2:end-1,2:end-1) = (phi_old(2:end-1,2:end-1) + dt .* delta_phi(2:end-1,2:end-1) .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
         ./ (1 + dt * delta_phi(2:end-1,2:end-1) .* divisionFactor); %TODO 15: Line to complete
     
     %Reinitialization of phi
@@ -105,28 +109,30 @@ while dif>tol && nIter<iterMax
     %change, but not the zero level set, that it really is what we are
     %looking for.
     dif = mean(sum( (phi(:) - phi_old(:)).^2 ));
-          
-    %Plot the level sets surface
-    subplot(1,2,1) 
-    %The level set function
-    surfc(phi,'LineStyle','-')  %TODO 16: Line to complete 
-    hold on
-    %The zero level set over the surface
-    contour(phi, 'LineColor', 'blue'); %TODO 17: Line to complete
-    hold off
-    title('Phi Function');
+         
+   if mod(nIter,3) == 0
+        %Plot the level sets surface
+        subplot(1,2,1) 
+        %The level set function
+        surfc(phi,'LineStyle','-')  %TODO 16: Line to complete 
+        hold on
+        %The zero level set over the surface
+        contour(phi, 'LineColor', 'blue'); %TODO 17: Line to complete
+        hold off
+        title('Phi Function');
+        
+        %Plot the curve evolution over the image
+        subplot(1,2,2)
+        imagesc(I);        
+        colormap gray;
+        hold on;
+        contour(phi, 'LineColor', 'blue') %TODO 18: Line to complete
+        title('Image and zero level set of Phi')
     
-    %Plot the curve evolution over the image
-    subplot(1,2,2)
-    imagesc(I);        
-    colormap gray;
-    hold on;
-    contour(phi, 'LineColor', 'blue') %TODO 18: Line to complete
-    title('Image and zero level set of Phi')
-
-    axis off;
-    hold off
-    drawnow;
-    pause(.0001); 
-    fprintf('iter %03d, error: %.6f\n', nIter, dif);
+        axis off;
+        hold off
+        drawnow;
+        pause(.0001); 
+        fprintf('iter %03d, error: %.6f\n', nIter, dif);
+    end
 end
