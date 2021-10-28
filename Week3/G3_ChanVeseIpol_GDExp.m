@@ -71,28 +71,29 @@ while dif>tol && nIter<iterMax
     
     %A and B estimation (A y B from the Pascal Getreuer's IPOL paper "Chan
     %Vese segmentation
-    A = mu ./ sqrt(eta^2 + (phi_iFwd .* phi_extend).^2 + (phi_jcent .* phi_extend).^2); %TODO 13: Line to complete
-    Aback = mu ./ sqrt(eta^2 + (phi_iBwd .* phi_extend).^2 + (phi_jcent .* phi_extend).^2);
-    B = mu ./ sqrt(eta^2 + (phi_icent .* phi_extend).^2 + (phi_jFwd .* phi_extend).^2); %TODO 14: Line to complete
-    Bback = mu ./ sqrt(eta^2 + (phi_icent .* phi_extend).^2 + (phi_jBwd .* phi_extend).^2);
+%     A = mu ./ sqrt(eta^2 + (phi_iFwd .* phi_extend).^2 + (phi_jcent .* phi_extend).^2); %TODO 13: Line to complete
+%     B = mu ./ sqrt(eta^2 + (phi_icent .* phi_extend).^2 + (phi_jFwd .* phi_extend).^2); %TODO 14: Line to complete
+    A = mu ./ sqrt(eta^2 + (phi_iFwd).^2 + (phi_jcent).^2); %TODO 13: Line to complete
+    B = mu ./ sqrt(eta^2 + (phi_icent).^2 + (phi_jFwd).^2); %TODO 14: Line to complete
+
 
     %%Equation 22, for inner points
     A1 = A(2:end-1,2:end-1) .* phi_extend(3:end,2:end-1); 
-    A2 = Aback(1:end-2,2:end-1) .* phi_extend(1:end-2,2:end-1);
+    A2 = A(1:end-2,2:end-1) .* phi_extend(1:end-2,2:end-1);
     B1 = B(2:end-1,2:end-1) .* phi_extend(2:end-1,3:end);
-    B2 = Bback(2:end-1,1:end-2) .* phi_extend(2:end-1,1:end-2);
+    B2 = B(2:end-1,1:end-2) .* phi_extend(2:end-1,1:end-2);
 %     A1 = A(2:end-1,2:end-1) .* phi(3:end,2:end-1);
-%     A2 = Aback(1:end-2,2:end-1) .* phi(1:end-2,2:end-1);
+%     A2 = A(1:end-2,2:end-1) .* phi(1:end-2,2:end-1);
 %     B1 = B(2:end-1,2:end-1) .* phi(2:end-1,3:end);
-%     B2 = Bback(2:end-1,1:end-2) .* phi(2:end-1,1:end-2);
+%     B2 = B(2:end-1,1:end-2) .* phi(2:end-1,1:end-2);
 
 %     c1Factor = lambda1 * (I(2:end-1,2:end-1) - c1).^2;
 %     c2Factor = lambda2 * (I(2:end-1,2:end-1) - c2).^2;
     c1Factor = lambda1 * (I - c1).^2;
     c2Factor = lambda2 * (I - c2).^2;
-    divisionFactor = A(2:end-1,2:end-1) + Aback(1:end-2,2:end-1) + B(2:end-1,2:end-1) + Bback(2:end-1,1:end-2);
+    divisionFactor = A(2:end-1,2:end-1) + A(1:end-2,2:end-1) + B(2:end-1,2:end-1) + B(2:end-1,1:end-2);
     
-    phi = (phi_old+ dt .* delta_phi .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
+    phi = (phi_old + dt .* delta_phi .* (A1 + A2 + B1 + B2 - nu - c1Factor + c2Factor) ) ...
         ./ (1 + dt * delta_phi .* divisionFactor); %TODO 15: Line to complete
     
     %Reinitialization of phi
@@ -110,16 +111,17 @@ while dif>tol && nIter<iterMax
     %Diference. This stopping criterium has the problem that phi can
     %change, but not the zero level set, that it really is what we are
     %looking for.
-    dif = mean(sum( (phi(:) - phi_old(:)).^2 ));
+%     dif = sqrt(mean(sum( (phi(:) - phi_old(:)).^2 )));
+    dif = sqrt(sum( (phi(:) - phi_old(:)).^2 ) / (ni*nj));
          
-   if mod(nIter,3) == 0
+   if mod(nIter, 50) == 0
         %Plot the level sets surface
         subplot(1,2,1) 
         %The level set function
         surfc(phi,'LineStyle','-')  %TODO 16: Line to complete 
         hold on
         %The zero level set over the surface
-        contour(phi, 'LineColor', 'blue'); %TODO 17: Line to complete
+%         contour(phi, 'LineColor', 'blue'); %TODO 17: Line to complete
         hold off
         title('Phi Function');
         
@@ -128,6 +130,7 @@ while dif>tol && nIter<iterMax
         imagesc(I);        
         colormap gray;
         hold on;
+
         contour(phi, 'LineColor', 'blue') %TODO 18: Line to complete
         title('Image and zero level set of Phi')
     

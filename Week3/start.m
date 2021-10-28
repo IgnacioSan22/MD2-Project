@@ -6,7 +6,7 @@ clc
 %I=mean(I,3); %To 2D matrix
 % I=double(imread('Image_to_Restore.png'));
 I=double(imread('noisedCircles.tif'));
-% I=double(imread('phantom17.bmp'));
+% I=double(imread('cameraman.jpeg'));
 % I=double(imread('phantom18.bmp'));
 I=mean(I,3);
 I=I-min(I(:));
@@ -35,7 +35,7 @@ lambda2=1;
 epHeaviside=1;
 eta=0.1;
 % eta=1;
-tol=0.0000001;
+tol=1e-6;
 % dt=(10^-2)/mu; 
 % dt=(10^-1)/mu;
 dt = 0.5;
@@ -47,6 +47,7 @@ reIni=0; %Try both of them
 
 %%Initial phi
 % phi_0=(-sqrt( ( X-round(ni/2)).^2 + (Y-round(nj/2)).^2)+50);
+% phi_0 = 4*(X-round(ni/2)).^2 + 4*(Y-round(nj/2)).^2;
 phi_0 = sin((pi/5)*X).*sin((pi/5)*Y);
 
 %%% This initialization allows a faster convergence for phantom 18
