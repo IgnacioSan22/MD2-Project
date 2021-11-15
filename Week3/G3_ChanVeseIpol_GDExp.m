@@ -19,7 +19,7 @@ function [ phi ] = G3_ChanVeseIpol_GDExp( I, phi_0, mu, nu, eta, lambda1, lambda
 hi=1;
 hj=1;
 
-filename = 'noised_cone.gif';
+filename = 'noisedCircles_cone.gif';
 h = figure;
 phi=phi_0;
 phi_extend = zeros(ni+2, nj+2);
@@ -33,18 +33,10 @@ while dif>tol && nIter<iterMax
     
     %Fixed phi, Minimization w.r.t c1 and c2 (constant estimation)
     H = 0.5 * (1 + (2/pi) .* atan(phi ./ epHeaviside));
-%     H = (phi > 0);
-%     Hout = phi <= 0;
     c1 = sum(I .* H,"all") ./ sum(H,"all"); %TODO 1: Line to complete
     c2 = sum(I .* (1-H),"all") ./ sum(1-H,"all"); %TODO 2: Line to complete
-%     c1 = sum(I .* H,"all") ./ sum(H,"all"); %TODO 1: Line to complete
-%     c2 = sum(I .* Hout,"all") ./ sum(Hout,"all"); %TODO 2: Line to complete
 
     %Boundary conditions
-%     phi(:,1) = phi(:,2);
-%     phi(:,end) = phi(:,end-1);
-%     phi(1,:) = phi(2,:);
-%     phi(end,:) = phi(end-1,:);
     phi_extend(2:end-1,2:end-1) = phi;
     phi_extend(1,:)   = phi_extend(end-1,:); %TODO 3: Line to complete
     phi_extend(end,:) = phi_extend(2,:); %TODO 4: Line to complete
@@ -80,13 +72,7 @@ while dif>tol && nIter<iterMax
     A2 = A(1:end-2,2:end-1) .* phi_extend(1:end-2,2:end-1);
     B1 = B(2:end-1,2:end-1) .* phi_extend(2:end-1,3:end);
     B2 = B(2:end-1,1:end-2) .* phi_extend(2:end-1,1:end-2);
-%     A1 = A(2:end-1,2:end-1) .* phi(3:end,2:end-1);
-%     A2 = A(1:end-2,2:end-1) .* phi(1:end-2,2:end-1);
-%     B1 = B(2:end-1,2:end-1) .* phi(2:end-1,3:end);
-%     B2 = B(2:end-1,1:end-2) .* phi(2:end-1,1:end-2);
 
-%     c1Factor = lambda1 * (I(2:end-1,2:end-1) - c1).^2;
-%     c2Factor = lambda2 * (I(2:end-1,2:end-1) - c2).^2;
     c1Factor = lambda1 * (I - c1).^2;
     c2Factor = lambda2 * (I - c2).^2;
     divisionFactor = A(2:end-1,2:end-1) + A(1:end-2,2:end-1) + ...
@@ -114,7 +100,7 @@ while dif>tol && nIter<iterMax
 %     dif = sqrt(mean(sum( (phi(:) - phi_old(:)).^2 )));
     dif = sqrt(sum( (phi(:) - phi_old(:)).^2 ) / (ni*nj));
          
-   if mod(nIter, 25) == 0 || nIter == 1
+   if mod(nIter, 5) == 0 || nIter == 1
         
         %Plot the level sets surface
         subplot(1,2,1) 
@@ -132,7 +118,7 @@ while dif>tol && nIter<iterMax
         colormap gray;
         hold on;
 
-        contour(phi > 0, 'LineColor', 'red') %TODO 18: Line to complete
+        contour(phi >= 0, 'LineColor', 'red') %TODO 18: Line to complete
         title(nIter)
     
         axis off;
