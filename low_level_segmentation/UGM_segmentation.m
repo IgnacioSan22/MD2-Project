@@ -15,7 +15,7 @@ addpath(genpath(basedir));
 K=4; % Number of color clusters (=number of states of hidden variables)
 
 %Pair-wise parameters
-smooth_term=[1 20]; % Potts Model
+smooth_term=[10 1]; % Potts Model
 
 %Load images
 im = imread(im_name);
@@ -72,7 +72,7 @@ if ~isempty(edgePot)
     toc;
 
     disp('ICMrestart'); tic;
-    ICMrestartDecoding = UGM_Decode_ICMrestart(nodePot,edgePot,edgeStruct,100);
+    ICMrestartDecoding = UGM_Decode_ICMrestart(nodePot,edgePot,edgeStruct,50);
     im_icm = reshape(mu_color(ICMrestartDecoding,:),size(im));
     toc;
 
@@ -101,7 +101,7 @@ if ~isempty(edgePot)
     subplot(2,3,3),imshow(Lab2RGB(im_bp),[]);xlabel('Max-Sum');
     subplot(2,3,4),imshow(Lab2RGB(im_lbp),[]);xlabel('Loopy Belief Propagation');
     subplot(2,3,5),imshow(Lab2RGB(im_icm),[]);xlabel('ICMrestart');
-    subplot(2,3,5),imshow(Lab2RGB(im_mM),[]);xlabel('Max of Marginals');
+    subplot(2,3,6),imshow(Lab2RGB(im_mM),[]);xlabel('Max of Marginals');
     
 else
    
