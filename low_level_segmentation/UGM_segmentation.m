@@ -12,7 +12,7 @@ addpath(genpath(basedir));
 
 %Set model parameters
 %cluster color
-K=4; % Number of color clusters (=number of states of hidden variables)
+K=2; % Number of color clusters (=number of states of hidden variables)
 
 %Pair-wise parameters
 smooth_term=[7 1]; % Potts Model
@@ -26,7 +26,6 @@ im = imread(im_name);
 % TODO: Uncomment if you want to work in the LAB space
 %
 im = RGB2Lab(im);
-
 
 
 %Preparing data for GMM fiting
@@ -62,16 +61,30 @@ if ~isempty(edgePot)
     
     % Call different UGM inference algorithms
     disp('Loopy Belief Propagation'); tic;
-    [nodeBelLBP,edgeBelLBP,logZLBP] = UGM_Infer_LBP(nodePot,edgePot,edgeStruct);toc;
+    [nodeBelLBP,edgeBelLBP,logZLBP] = UGM_Infer_LBP(nodePot, edgePot, edgeStruct); toc;
     [~,c] = max(nodeBelLBP,[],2);
-    im_lbp= reshape(mu_color(c,:),size(im));
+    im_lbp = reshape(mu_color(c,:),size(im));
 
     % Max-sum
     disp('Max-sum'); tic;
-    decodeLBP = UGM_Decode_LBP(nodePot,edgePot,edgeStruct);
-    im_bp= reshape(mu_color(decodeLBP,:),size(im));
+    decodeLBP = UGM_Decode_LBP(nodePot, edgePot, edgeStruct);
+    im_bp = reshape(mu_color(decodeLBP,:),size(im));
     toc;
-    
+
+    % Graph Cut
+    disp('Graph Cut'); tic;
+    decodeGC = UGM_Decode_GraphCut(nodePot, edgePot, edgeStruct);
+%     im_gc = reshape(mu_color(decodeGC,:),size(im));
+    im_gc = reshape(decodeGC, rows, cols)
+    toc;
+
+%     % Linear Programing Relaxation
+%     disp('Linear Programing Relaxation'); tic;
+%     decodeLPR = UGM_Decode_LinProg(nodePot, edgePot, edgeStruct);
+% %     im_lpr = reshape(mu_color(decodeLPR,:),size(im));
+%     im_lpr = reshape(decodeLPR, rows, cols);
+%     toc;
+
     
     % TODO: apply other inference algorithms and compare their performance
     %
@@ -79,10 +92,11 @@ if ~isempty(edgePot)
     % - Linear Programing Relaxation
     
     figure
-    subplot(2,2,1),imshow(Lab2RGB(im));xlabel('Original');
-    subplot(2,2,2),imshow(Lab2RGB(im_c),[]);xlabel('Clustering without GM');
-    subplot(2,2,3),imshow(Lab2RGB(im_bp),[]);xlabel('Max-Sum');
-    subplot(2,2,4),imshow(Lab2RGB(im_lbp),[]);xlabel('Loopy Belief Propagation');
+    subplot(2,3,1),imshow(Lab2RGB(im));xlabel('Original');
+    subplot(2,3,2),imshow(Lab2RGB(im_c),[]);xlabel('Clustering without GM');
+    subplot(2,3,3),imshow(Lab2RGB(im_bp),[]);xlabel('Max-Sum');
+    subplot(2,3,4),imshow(Lab2RGB(im_lbp),[]);xlabel('Loopy Belief Propagation');
+    subplot(2,3,5),imshow(Lab2RGB(im_gc),[]);xlabel('Graph Cut');
     
 else
    
