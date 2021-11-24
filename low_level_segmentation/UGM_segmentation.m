@@ -12,10 +12,10 @@ addpath(genpath(basedir));
 
 %Set model parameters
 %cluster color
-K=2; % Number of color clusters (=number of states of hidden variables)
+K=4; % Number of color clusters (=number of states of hidden variables)
 
 %Pair-wise parameters
-smooth_term=[7 1]; % Potts Model
+smooth_term=[1 20]; % Potts Model
 
 %Load images
 im = imread(im_name);
@@ -71,19 +71,23 @@ if ~isempty(edgePot)
     im_bp = reshape(mu_color(decodeLBP,:),size(im));
     toc;
 
-    % Graph Cut
-    disp('Graph Cut'); tic;
-    decodeGC = UGM_Decode_GraphCut(nodePot, edgePot, edgeStruct);
-%     im_gc = reshape(mu_color(decodeGC,:),size(im));
-    im_gc = reshape(decodeGC, rows, cols)
+    disp('ICMrestart'); tic;
+    ICMrestartDecoding = UGM_Decode_ICMrestart(nodePot,edgePot,edgeStruct,100);
+    im_icm = reshape(mu_color(ICMrestartDecoding,:),size(im));
     toc;
 
-%     % Linear Programing Relaxation
-%     disp('Linear Programing Relaxation'); tic;
-%     decodeLPR = UGM_Decode_LinProg(nodePot, edgePot, edgeStruct);
-% %     im_lpr = reshape(mu_color(decodeLPR,:),size(im));
-%     im_lpr = reshape(decodeLPR, rows, cols);
+    disp('Max of Marginals'); tic;
+    maxOfMarginalsMFdecode = UGM_Decode_MaxOfMarginals(nodePot,edgePot,edgeStruct,@UGM_Infer_MeanField);
+    im_mM = reshape(mu_color(maxOfMarginalsMFdecode,:),size(im));
+    toc;
+
+    % Graph Cut
+%     disp('Graph Cut'); tic;
+%     decodeGC = UGM_Decode_GraphCut(nodePot, edgePot, edgeStruct);
+% %     im_gc = reshape(mu_color(decodeGC,:),size(im));
+%     im_gc = reshape(decodeGC, rows, cols);
 %     toc;
+
 
     
     % TODO: apply other inference algorithms and compare their performance
@@ -96,7 +100,8 @@ if ~isempty(edgePot)
     subplot(2,3,2),imshow(Lab2RGB(im_c),[]);xlabel('Clustering without GM');
     subplot(2,3,3),imshow(Lab2RGB(im_bp),[]);xlabel('Max-Sum');
     subplot(2,3,4),imshow(Lab2RGB(im_lbp),[]);xlabel('Loopy Belief Propagation');
-    subplot(2,3,5),imshow(Lab2RGB(im_gc),[]);xlabel('Graph Cut');
+    subplot(2,3,5),imshow(Lab2RGB(im_icm),[]);xlabel('ICMrestart');
+    subplot(2,3,5),imshow(Lab2RGB(im_mM),[]);xlabel('Max of Marginals');
     
 else
    

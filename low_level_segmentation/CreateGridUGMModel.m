@@ -28,4 +28,5 @@ edgeStruct = UGM_makeEdgeStruct(adj,K);
 potts_potential = lambda(2) * ones(K,K);
 potts_potential(1:(K+1):end) = lambda(1);
 edgePot = repmat(potts_potential, [1 1 edgeStruct.nEdges]);
+
 toc;
